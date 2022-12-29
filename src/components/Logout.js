@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router';
+import { getUser } from '../utils';
 
-function Logout() {
+function Logout(props) {
     const navigate = useNavigate();
     (async function logout() {
         try {
@@ -9,8 +10,8 @@ function Logout() {
                 method: "POST",
                 'credentials': 'include',
             });
+            props.setLoggedInUser(await getUser());
             navigate("/");
-            window.location.reload();
         } catch (err) { console.error(err) }
     })();
 

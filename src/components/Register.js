@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { errorDiv, handleErrors, successDiv } from '../utils';
 
 function Register() {
     const navigate = useNavigate();
@@ -10,28 +11,6 @@ function Register() {
     const [rePass, setRePass] = React.useState('');
     const [error, setError] = React.useState(null)
     const [success, setSuccess] = React.useState(null)
-
-    //notification elements
-    const errorDiv = error
-        ? <div className="error">
-            <br />
-            <i>{error}</i>
-        </div>
-        : '';
-    const successDiv = success
-        ? <div className="success">
-            <br />
-            <i>{success}</i>
-        </div>
-        : '';
-
-    async function handleErrors(response) {
-        if (!response.ok) {
-            setError(await response.text());
-            throw Error(response.statusText);
-        }
-        return response;
-    }
 
     const submitInfo = async (event) => {
         try {
@@ -51,7 +30,7 @@ function Register() {
                 body: toSubmit
             });
             //notify and/or navigate
-            await handleErrors(response);
+            await handleErrors(response, setError);
             setError(null);
             setSuccess("Registration Successful!");
             setTimeout(function () {
@@ -83,8 +62,8 @@ function Register() {
                     <div className="form-control">
                         <button type="submit">Register</button>
                     </div>
-                    {errorDiv}
-                    {successDiv}
+                    {errorDiv(error)}
+                    {successDiv(success)}
                 </form>
             </main>
         </div>

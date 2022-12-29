@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import { useParams } from 'react-router-dom';
+import { errorDiv, getItems, handleErrors, successDiv } from '../utils';
 
 function Edit(props) {
     const navigate = useNavigate();
@@ -12,28 +13,6 @@ function Edit(props) {
     const [imgURL, setImgURL] = React.useState("");
     const [error, setError] = React.useState(null)
     const [success, setSuccess] = React.useState(null)
-
-    //notification elements
-    const errorDiv = error
-        ? <div className="error">
-            <br />
-            <i>{error}</i>
-        </div>
-        : '';
-    const successDiv = success
-        ? <div className="success">
-            <br />
-            <i>{success}</i>
-        </div>
-        : '';
-
-    async function handleErrors(response) {
-        if (!response.ok) {
-            setError(await response.text());
-            throw Error(response.statusText);
-        }
-        return response;
-    }
 
     //fill form with existing animal data
     React.useEffect(() => {
@@ -66,12 +45,12 @@ function Edit(props) {
                 body: toSubmit
             });
             //notify and/or navigate
-            await handleErrors(response);
+            await handleErrors(response, setError);
             setError(null);
             setSuccess("Edit Successful!");
+            props.setItemsArray(await getItems());
             setTimeout(function () {
                 navigate("/profile");
-                window.location.reload();
             }, 1500);
         } catch (err) {
             console.error(err);
@@ -98,8 +77,8 @@ function Edit(props) {
                     <div className="form-control">
                         <button type="submit">Edit</button>
                     </div>
-                    {errorDiv}
-                    {successDiv}
+                    {errorDiv(error)}
+                    {successDiv(success)}
                 </form>
             </main>
         </div>
