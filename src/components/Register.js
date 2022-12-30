@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { errorDiv, handleErrors, successDiv } from '../utils';
+import { errorDiv, fetchHandler, handleErrors, successDiv } from '../utils';
 
 function Register() {
     const navigate = useNavigate();
@@ -21,14 +21,10 @@ function Register() {
                 password,
                 rePass
             });
-            const url = `${process.env.REACT_APP_API_URI}/api/user/register/`;
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: toSubmit
-            });
+
+            //send request to backend
+            const response = await fetchHandler("user/register", "POST", toSubmit,);
+
             //notify and/or navigate
             await handleErrors(response, setError);
             setError(null);

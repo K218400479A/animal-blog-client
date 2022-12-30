@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import { useParams } from 'react-router-dom';
-import { errorDiv, getItems, handleErrors, successDiv } from '../utils';
+import { errorDiv, fetchHandler, getItems, handleErrors, successDiv } from '../utils';
 
 function Edit(props) {
     const navigate = useNavigate();
@@ -35,15 +35,10 @@ function Edit(props) {
                 description,
                 imgURL,
             });
-            const url = `${process.env.REACT_APP_API_URI}/api/item/edit/${params.id}`;
-            const response = await fetch(url, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: 'include',
-                body: toSubmit
-            });
+
+            //send request to backend
+            const response = await fetchHandler("item/edit", "PUT", toSubmit, params.id);
+
             //notify and/or navigate
             await handleErrors(response, setError);
             setError(null);

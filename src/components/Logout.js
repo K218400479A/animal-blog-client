@@ -1,15 +1,12 @@
 import { useNavigate } from 'react-router';
-import { getUser } from '../utils';
+import { fetchHandler, getUser } from '../utils';
 
 function Logout(props) {
     const navigate = useNavigate();
     (async function logout() {
         try {
-            const url = `${process.env.REACT_APP_API_URI}/api/user/logout`;
-            await fetch(url, {
-                method: "POST",
-                'credentials': 'include',
-            });
+            //send request to backend
+            await fetchHandler("user/logout", "POST",);
             props.setLoggedInUser(await getUser());
             navigate("/");
         } catch (err) { console.error(err) }

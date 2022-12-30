@@ -2,7 +2,7 @@ import React from "react";
 import Item from "./Item";
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
-import { errorDiv, getItems, handleErrors, successDiv } from "../utils";
+import { errorDiv, fetchHandler, getItems, handleErrors, successDiv } from "../utils";
 
 function Profile(props) {
     const navigate = useNavigate();
@@ -21,12 +21,10 @@ function Profile(props) {
     }, [props.itemsArray, props.loggedInUser.id]);
 
     async function deleteItem(id) {
+
         //send request to backend
-        const deleteURL = `${process.env.REACT_APP_API_URI}/api/item/delete/${id}`;
-        const response = await fetch(deleteURL, {
-            method: "DELETE",
-            credentials: 'include',
-        });
+        const response = await fetchHandler("item/delete", "DELETE", null, id);
+
         //notify and/or navigate
         await handleErrors(response, setError);
         window.scrollTo(0, 0);

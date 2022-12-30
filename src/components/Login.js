@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { errorDiv, getUser, handleErrors } from '../utils';
+import { errorDiv, fetchHandler, getUser, handleErrors } from '../utils';
 
 
 function Login(props) {
@@ -19,15 +19,10 @@ function Login(props) {
                 username,
                 password,
             });
-            const url = `${process.env.REACT_APP_API_URI}/api/user/login`;
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: 'include',
-                body: toSubmit
-            });
+
+            //send request to backend
+            const response = await fetchHandler("user/login", "POST", toSubmit,);
+
             //notify and/or navigate
             await handleErrors(response, setError);
             props.setLoggedInUser(await getUser());

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { errorDiv, getItems, handleErrors, successDiv } from '../utils';
+import { errorDiv, fetchHandler, getItems, handleErrors, successDiv } from '../utils';
 
 function Create(props) {
     const navigate = useNavigate();
@@ -21,15 +21,10 @@ function Create(props) {
                 description,
                 imgURL,
             });
-            const url = `${process.env.REACT_APP_API_URI}/api/item/create`;
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: 'include',
-                body: toSubmit
-            });
+
+            //send request to backend
+            const response = await fetchHandler("item/create", "POST", toSubmit)
+
             //notify and/or navigate
             await handleErrors(response, setError);
             setError(null);

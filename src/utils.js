@@ -44,3 +44,15 @@ export const successDiv = (success) => {
         :
         '';
 }
+
+export const fetchHandler = async (route, method, body, id,) => {
+    const url = `${process.env.REACT_APP_API_URI}/api/${route}` + (id ? `/${id}` : '');
+    return await fetch(url, {
+        method: method,
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: 'include',
+        body: body,
+    });
+}
