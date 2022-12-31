@@ -5,6 +5,7 @@ import { errorDiv, fetchHandler, getUser, handleErrors } from '../utils';
 
 function Login(props) {
     const navigate = useNavigate();
+    
     //states
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
@@ -14,7 +15,8 @@ function Login(props) {
         try {
             event.preventDefault();
             setError(null);
-            //send data to backend
+
+            //prepare data
             const toSubmit = JSON.stringify({
                 username,
                 password,

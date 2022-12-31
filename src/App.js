@@ -15,6 +15,7 @@ import Login from './components/Login';
 import Logout from './components/Logout';
 
 function App() {
+  //states
   const [loggedInUser, setLoggedInUser] = React.useState(false);
   const [itemsArray, setItemsArray] = React.useState([]);
 
@@ -22,11 +23,11 @@ function App() {
     (async () => {
       try {
         // GET user data
-        const data = await getUser();
-        setLoggedInUser(data);
+        const userData = await getUser();
+        setLoggedInUser(userData);
         // GET item data
-        const itemsArr = await getItems();
-        setItemsArray(itemsArr);
+        const itemData = await getItems();
+        setItemsArray(itemData);
       } catch (err) {
         console.log(err);
       }

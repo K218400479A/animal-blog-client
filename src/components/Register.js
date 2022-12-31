@@ -15,7 +15,8 @@ function Register() {
     const submitInfo = async (event) => {
         try {
             event.preventDefault();
-            //send data to backend
+
+            //prepare data
             const toSubmit = JSON.stringify({
                 username,
                 password,

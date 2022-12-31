@@ -29,7 +29,8 @@ function Edit(props) {
     const editItem = async (event) => {
         try {
             event.preventDefault();
-            //send data to backend
+
+            //prepare data
             const toSubmit = JSON.stringify({
                 title,
                 description,
