@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import { useParams } from 'react-router-dom';
+import { errorDiv, fetchHandler, getItems, handleErrors, successDiv } from '../utils';
 
 function Edit(props) {
     const navigate = useNavigate();
@@ -12,28 +13,6 @@ function Edit(props) {
     const [imgURL, setImgURL] = React.useState("");
     const [error, setError] = React.useState(null)
     const [success, setSuccess] = React.useState(null)
-
-    //notification elements
-    const errorDiv = error
-        ? <div className="error">
-            <br />
-            <i>{error}</i>
-        </div>
-        : '';
-    const successDiv = success
-        ? <div className="success">
-            <br />
-            <i>{success}</i>
-        </div>
-        : '';
-
-    async function handleErrors(response) {
-        if (!response.ok) {
-            setError(await response.text());
-            throw Error(response.statusText);
-        }
-        return response;
-    }
 
     //fill form with existing animal data
     React.useEffect(() => {
@@ -50,28 +29,24 @@ function Edit(props) {
     const editItem = async (event) => {
         try {
             event.preventDefault();
-            //send data to backend
+
+            //prepare data
             const toSubmit = JSON.stringify({
                 title,
                 description,
                 imgURL,
             });
-            const url = `${process.env.REACT_APP_API_URI}/api/item/edit/${params.id}`;
-            const response = await fetch(url, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: 'include',
-                body: toSubmit
-            });
+
+            //send request to backend
+            const response = await fetchHandler("item/edit", "PUT", toSubmit, params.id);
+
             //notify and/or navigate
-            await handleErrors(response);
+            await handleErrors(response, setError);
             setError(null);
             setSuccess("Edit Successful!");
+            props.setItemsArray(await getItems());
             setTimeout(function () {
                 navigate("/profile");
-                window.location.reload();
             }, 1500);
         } catch (err) {
             console.error(err);
@@ -98,8 +73,8 @@ function Edit(props) {
                     <div className="form-control">
                         <button type="submit">Edit</button>
                     </div>
-                    {errorDiv}
-                    {successDiv}
+                    {errorDiv(error)}
+                    {successDiv(success)}
                 </form>
             </main>
         </div>

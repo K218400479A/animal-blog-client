@@ -1,52 +1,34 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
+import { errorDiv, fetchHandler, getUser, handleErrors } from '../utils';
 
 
-function Login() {
+function Login(props) {
     const navigate = useNavigate();
+    
     //states
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [error, setError] = React.useState(null)
 
-    //notification error
-    const errorDiv = error
-        ? <div className="error">
-            <br />
-            <i>{error}</i>
-        </div>
-        : '';
-
-    async function handleErrors(response) {
-        if (!response.ok) {
-            setError(await response.text());
-            throw Error(response.statusText);
-        }
-        return response;
-    }
-
     const submitInfo = async (event) => {
         try {
             event.preventDefault();
             setError(null);
-            //send data to backend
+
+            //prepare data
             const toSubmit = JSON.stringify({
                 username,
                 password,
             });
-            const url = `${process.env.REACT_APP_API_URI}/api/user/login`;
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: 'include',
-                body: toSubmit
-            });
+
+            //send request to backend
+            const response = await fetchHandler("user/login", "POST", toSubmit,);
+
             //notify and/or navigate
-            await handleErrors(response);
+            await handleErrors(response, setError);
+            props.setLoggedInUser(await getUser());
             navigate("/");
-            window.location.reload();
         } catch (err) {
             console.error(err);
         }
@@ -68,7 +50,7 @@ function Login() {
                     <div className="form-control">
                         <button type="submit">Login</button>
                     </div>
-                    {errorDiv}
+                    {errorDiv(error)}
                 </form>
             </main>
         </div>

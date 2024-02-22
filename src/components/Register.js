@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { errorDiv, fetchHandler, handleErrors, successDiv } from '../utils';
 
 function Register() {
     const navigate = useNavigate();
@@ -11,47 +12,22 @@ function Register() {
     const [error, setError] = React.useState(null)
     const [success, setSuccess] = React.useState(null)
 
-    //notification elements
-    const errorDiv = error
-        ? <div className="error">
-            <br />
-            <i>{error}</i>
-        </div>
-        : '';
-    const successDiv = success
-        ? <div className="success">
-            <br />
-            <i>{success}</i>
-        </div>
-        : '';
-
-    async function handleErrors(response) {
-        if (!response.ok) {
-            setError(await response.text());
-            throw Error(response.statusText);
-        }
-        return response;
-    }
-
     const submitInfo = async (event) => {
         try {
             event.preventDefault();
-            //send data to backend
+
+            //prepare data
             const toSubmit = JSON.stringify({
                 username,
                 password,
                 rePass
             });
-            const url = `${process.env.REACT_APP_API_URI}/api/user/register/`;
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: toSubmit
-            });
+
+            //send request to backend
+            const response = await fetchHandler("user/register", "POST", toSubmit,);
+
             //notify and/or navigate
-            await handleErrors(response);
+            await handleErrors(response, setError);
             setError(null);
             setSuccess("Registration Successful!");
             setTimeout(function () {
@@ -83,8 +59,8 @@ function Register() {
                     <div className="form-control">
                         <button type="submit">Register</button>
                     </div>
-                    {errorDiv}
-                    {successDiv}
+                    {errorDiv(error)}
+                    {successDiv(success)}
                 </form>
             </main>
         </div>
